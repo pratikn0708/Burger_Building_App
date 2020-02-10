@@ -1,11 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../utility';
-import { fetchOrdersFail } from '../actions/order';
 
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 };
 
 const INGREDIENT_PRICE = {
@@ -20,7 +20,8 @@ const addIngredients = (state, action) => {
     const updateIngredients = updateObject(state.ingredients, updateIngredient)
     const updatedState = {
         ingredients: updateIngredients,
-        totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName]
+        totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName],
+        building: true
     };
 
     return updateObject(state, updatedState);
@@ -31,7 +32,8 @@ const removeIngredients = (state, action) => {
     const updateIngs = updateObject(state.ingredients, updateIng)
     const updatedSt = {
         ingredients: updateIngs,
-        totalPrice: state.totalPrice - INGREDIENT_PRICE[action.ingredientName]
+        totalPrice: state.totalPrice - INGREDIENT_PRICE[action.ingredientName],
+        building: true
     };
 
     return updateObject(state, updatedSt);
@@ -46,7 +48,8 @@ const setIngredients = (state, action) => {
             meat: action.ingredients.meat
         },
         totalPrice: 4,
-        error: false
+        error: false,
+        building: false
     });
 };
 
@@ -63,13 +66,13 @@ const reducer = (state = initialState, action) => {
             return addIngredients(state, action);
 
         case actionTypes.REMOVE_INGREDIENTS:
-            return removeIngredients(stae, action);
+            return removeIngredients(state, action);
 
         case actionTypes.SET_INGREDIENTS:
             return setIngredients(state, action);
 
         case actionTypes.FETCH_INGREDIENTS_FAILED:
-            return fetchIngredientsFailed(stae, action);
+            return fetchIngredientsFailed(state, action);
 
         default:
             return state;
