@@ -5,7 +5,7 @@ import classes from './ContactData.module.css';
 import axios from '../../../axios-order';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
-import withErrorHandler from '../../../hoc/WithErrorHandler';
+import withErrorHandler from '../../../hoc/WithErrorHandler/WithErrorHandler';
 import * as actions from '../../../store/actions/index';
 
 class ContactData extends Component {
@@ -73,7 +73,8 @@ class ContactData extends Component {
                 validation: {
                     required: true,
                     minLength: 6,
-                    maxLength: 6
+                    maxLength: 6,
+                    isNumeric: true
                 },
                 valid: false,
                 touched: false
@@ -91,8 +92,7 @@ class ContactData extends Component {
                 valid: true
             },
         },
-        formIsvalid: false,
-        loading: false
+        formIsvalid: false
     };
 
     checkValidity(value, rules) {
@@ -108,6 +108,11 @@ class ContactData extends Component {
 
         if (rules.maxLength) {
             isValid = value.length <= rules.maxLength && isValid;
+        }
+
+        if (rules.isNumeric) {
+            const pattern = /^\d+$/;
+            isValid = pattern.test(value) && isValid
         }
 
         return isValid;
@@ -133,7 +138,6 @@ class ContactData extends Component {
 
     orderHandler = (event) => {
         event.preventDefault();
-        this.setState({ loading: true });
         const formData = {};
 
         for (let formElementIdentifier in this.state.orderForm) {
@@ -146,7 +150,7 @@ class ContactData extends Component {
             orderData: formData
         };
         this.props.onOrderBurger(order);
-        
+
     };
 
     render() {
@@ -177,7 +181,7 @@ class ContactData extends Component {
             </form>
         );
 
-        if (this.state.loading) {
+        if (this.props.loading) {
             form = <Spinner />
         }
 
@@ -192,13 +196,16 @@ class ContactData extends Component {
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
-        price: state.totalPrice
+        ings: state.burgerBuilder.ingredients,
+        price: state.burgerBuilder.totalPrice,
+        loading:state.order.loading
     }
 };
 
 const mapDispatchToProps = dispatch => {
-    onOrderBurger: (orderData) => dispatch(actions.purchaseBurgerStart());
+    return {
+        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+    };
 }
 
-export default connect(mapStateToProps)(withErrorHandler(ContactData, axios));
+export default connect(mapStateToProps,mapDispatchToProps)(withErrorHandler(ContactData, axios));
