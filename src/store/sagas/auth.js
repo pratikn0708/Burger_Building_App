@@ -22,10 +22,10 @@ export function* authUserSaga(action) {
         password: action.password,
         returnSecureToken: true
     };
-    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCaYuNyPa5PXKaTbni0_Rve5R2UPASCnrw';
+    let url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=[API_KEY]';
 
     if (!action.isSignUp) {
-        url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCaYuNyPa5PXKaTbni0_Rve5R2UPASCnrw';
+        url = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=[API_KEY]';
     };
 
     try {
